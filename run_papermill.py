@@ -73,5 +73,51 @@ pm.execute_notebook(
     kernel_name="python3",
 )
 
+# Chạy Notebook FP_Growth Modelling
+pm.execute_notebook(
+    "notebooks/fp_growth_modelling.ipynb",
+    "notebooks/runs/fp_growth_modelling_run.ipynb",
+    parameters=dict(
+        BASKET_BOOL_PATH="data/processed/basket_bool.parquet",
+        RULES_OUTPUT_PATH="data/processed/rules_fpgrowth_filtered.csv",
+
+        MIN_SUPPORT=0.01,
+        MAX_LEN=3,
+
+        METRIC="lift",
+        MIN_THRESHOLD=1.0,
+
+        FILTER_MIN_SUPPORT=0.01,
+        FILTER_MIN_CONF=0.3,
+        FILTER_MIN_LIFT=1.2,
+        FILTER_MAX_ANTECEDENTS=2,
+        FILTER_MAX_CONSEQUENTS=1,
+
+        TOP_N_RULES=20,
+
+        PLOT_TOP_LIFT=True,
+        PLOT_TOP_CONF=True,
+        PLOT_SCATTER=True,
+        PLOT_NETWORK=True,
+        PLOT_PLOTLY_SCATTER=True,
+    ),
+    kernel_name="python3",
+)
+
+# Chạy Notebook So sánh Apriori và FP-Growth
+pm.execute_notebook(
+    "notebooks/compare_apriori_fpgrowth.ipynb",
+    "notebooks/runs/compare_apriori_fpgrowth_run.ipynb",
+    parameters=dict(
+        BASKET_BOOL_PATH="data/processed/basket_bool.parquet",
+
+        MIN_SUPPORT=0.01,
+        MAX_LEN=3,
+
+        METRIC="lift",
+        MIN_THRESHOLD=1.0,
+    ),
+    kernel_name="python3",
+)
 
 print("Đã chạy xong pipeline")
