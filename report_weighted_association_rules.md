@@ -120,16 +120,27 @@ Trong lĩnh vực bán lẻ, việc hiểu mối quan hệ giữa các sản ph�
 - **Mô tả**: Biểu đồ cột cho top 10 luật niche theo weighted lift.
 - **Hành vi mua sắm**: Thể hiện luật nào mạnh nhất trong phân khúc cao cấp – khách VIP ưu tiên combos premium.
 - **Điểm khác biệt Apriori/FP-Growth**: Không khác biệt, vì kết quả giống; FP-Growth chỉ nhanh hơn.
+- **Hình ảnh**:
+  ![Bar Chart Weighted Lift](images/bar_chart_weighted_lift.png)
+  *(Export từ notebook: fig2.show() → Save as PNG)*
 
 ### 2. Scatter Plot: Support vs Weighted Support
 - **Mô tả**: Điểm phân tán cho tất cả niche rules (X: support, Y: weighted support, size: weighted lift).
 - **Hành vi mua sắm**: Luật ở góc trên-trái là "niche gems" – ít phổ biến nhưng giá trị kinh doanh cao, phản ánh mua sắm tinh tế của khách hàng giàu có.
 - **Điểm khác biệt Apriori/FP-Growth**: Không có, vì thuật toán sinh rules giống nhau.
+- **Hình ảnh**:
+  ![Scatter Plot Support Weighted](images/scatter_support_weighted.png)
+  *(Export từ notebook: fig.show() → Save as PNG)*
 
 ### 3. Network Graph: Quan Hệ Sản Phẩm trong Luật Niche
 - **Mô tả**: Đồ thị mạng với nodes là sản phẩm, edges là luật (weight = weighted lift).
 - **Hành vi mua sắm**: Hiển thị clusters sản phẩm liên quan (e.g., tea sets, stationery), cho thấy hành vi mua combo trong phân khúc niche.
 - **Điểm khác biệt Apriori/FP-Growth**: Không khác, nhưng FP-Growth hiệu quả hơn cho visualization trên dữ liệu lớn.
+- **Hình ảnh**:
+  ![Network Graph Niche](images/network_graph_niche.png)
+  *(Export từ notebook: fig.show() → Save as PNG)*
+
+*(Hướng dẫn export: Trong notebook `weighted_association_rules.ipynb`, chạy cell visualization. Trên chart Plotly, click nút "Download plot as a png" (icon camera) → Lưu vào `images/`. Đổi tên file thành `bar_chart_weighted_lift.png`, `scatter_support_weighted.png`, `network_graph_niche.png`. Nếu không thấy nút, dùng `fig.write_image("images/filename.png")` trong code.)*
 
 ## Insights Kinh Doanh
 
@@ -208,4 +219,6 @@ Dự án thành công mở rộng association rules với trọng số, khám ph
 - Thời gian: FP-Growth 1.7m, Weighted +36s.
 - Impact: Insights cho cross-selling, loyalty, inventory.
 
-*Báo cáo chi tiết này dựa trên notebook `weighted_association_rules.ipynb` và data processed. Code snippets minh họa, không dump toàn bộ. Liên hệ: [Your Contact]*
+---
+
+*Báo cáo chi tiết này dựa trên notebook `weighted_association_rules.ipynb` và data processed. Hình ảnh biểu đồ được export từ Plotly và chèn vào. Liên hệ: [Your Contact]*
