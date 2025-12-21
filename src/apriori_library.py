@@ -108,6 +108,10 @@ class DataCleaner:
 
         # Bỏ description NA
         self.df_uk = self.df_uk.dropna(subset=["Description"])
+        #  Thêm cột InvoiceValue (tổng giá trị của mỗi hóa đơn) vào dữ liệu làm sạch, 
+        #  dùng làm trọng số cho luật kết hợp có trọng số.
+        # Tính InvoiceValue cho mỗi invoice (tổng giá trị hóa đơn)
+        self.df_uk["InvoiceValue"] = self.df_uk.groupby("InvoiceNo")["TotalPrice"].transform("sum")
 
         return self.df_uk
 
@@ -277,9 +281,8 @@ class BasketPreparer:
         """
         if self.basket_bool is None:
             raise ValueError("Basket not encoded. Please call encode_basket() first.")
-        basket_bool_to_save = self.basket_bool.reset_index(drop=True)
-
-        basket_bool_to_save.to_parquet(output_path, index=False)
+        # Giữ index (InvoiceNo) để dùng cho weighted
+        self.basket_bool.to_parquet(output_path, index=True)
         print(f"Đã lưu basket boolean: {output_path}")
 
 
@@ -434,10 +437,38 @@ class AssociationRulesMiner:
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
         rules_df.to_csv(output_path, index=False)
         print(f"Đã lưu luật vào: {output_path}")
+    # Thêm method add_weighted_metrics để tính weighted_support và weighted_lift dựa trên InvoiceValue.
+    def add_weighted_metrics(self, df_cleaned, basket_bool):
+        """
+        Add weighted support, confidence, lift to rules.
 
-# =========================================================
-# 4. FP-GROWTH ASSOCIATION RULES MINER
-# =========================================================
+        Args:
+            df_cleaned (pd.DataFrame): Cleaned dataframe with InvoiceValue
+            basket_bool (pd.DataFrame): Boolean basket with InvoiceNo index
+        """
+        if self.rules is None:
+            raise ValueError("Rules not generated.")
+
+        # Dict invoice to InvoiceValue
+        invoice_values = df_cleaned.groupby('InvoiceNo')['InvoiceValue'].first()
+
+        total_weight = invoice_values.sum()
+
+        def calc_weighted_support(itemset):
+            # Find invoices containing all items in itemset
+            mask = basket_bool[list(itemset)].all(axis=1)
+            invoices = basket_bool.index[mask]
+            return invoice_values.loc[invoices].sum() / total_weight
+
+        rules = self.rules.copy()
+        rules['weighted_support_antecedents'] = rules['antecedents'].apply(calc_weighted_support)
+        rules['weighted_support_consequents'] = rules['consequents'].apply(calc_weighted_support)
+        rules['weighted_support'] = rules.apply(lambda row: calc_weighted_support(row['antecedents'].union(row['consequents'])), axis=1)
+        rules['weighted_confidence'] = rules['weighted_support'] / rules['weighted_support_antecedents']
+        rules['weighted_lift'] = rules['weighted_confidence'] / rules['weighted_support_consequents']
+
+        self.rules = rules
+        return self.rules
 
 
 class FPGrowthMiner:
@@ -592,9 +623,37 @@ class FPGrowthMiner:
         rules_df.to_csv(output_path, index=False)
         print(f"Đã lưu luật vào: {output_path}")
 
-# =========================================================
-# 5. APRIORI vs FP-GROWTH COMPARISON HELPERS
-# =========================================================
+    def add_weighted_metrics(self, df_cleaned, basket_bool):
+        """
+        Add weighted support, confidence, lift to rules.
+
+        Args:
+            df_cleaned (pd.DataFrame): Cleaned dataframe with InvoiceValue
+            basket_bool (pd.DataFrame): Boolean basket with InvoiceNo index
+        """
+        if self.rules is None:
+            raise ValueError("Rules not generated.")
+
+        # Dict invoice to InvoiceValue
+        invoice_values = df_cleaned.groupby('InvoiceNo')['InvoiceValue'].first()
+
+        total_weight = invoice_values.sum()
+
+        def calc_weighted_support(itemset):
+            # Find invoices containing all items in itemset
+            mask = basket_bool[list(itemset)].all(axis=1)
+            invoices = basket_bool.index[mask]
+            return invoice_values.loc[invoices].sum() / total_weight
+
+        rules = self.rules.copy()
+        rules['weighted_support_antecedents'] = rules['antecedents'].apply(calc_weighted_support)
+        rules['weighted_support_consequents'] = rules['consequents'].apply(calc_weighted_support)
+        rules['weighted_support'] = rules.apply(lambda row: calc_weighted_support(row['antecedents'].union(row['consequents'])), axis=1)
+        rules['weighted_confidence'] = rules['weighted_support'] / rules['weighted_support_antecedents']
+        rules['weighted_lift'] = rules['weighted_confidence'] / rules['weighted_support_consequents']
+
+        self.rules = rules
+        return self.rules
 
 
 def benchmark_apriori_vs_fpgrowth(
