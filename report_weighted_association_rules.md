@@ -114,33 +114,6 @@ Trong lĩnh vực bán lẻ, việc hiểu mối quan hệ giữa các sản ph�
 
 - **Ý nghĩa**: "NATURAL SLATE HEART CHALKBOARD" có utility/support cao nhất, cho thấy lợi nhuận lớn per transaction dù ít bán – focus quảng bá cho khách hàng decor cao cấp.
 
-## Trực Quan Hóa Kết Quả
-
-### 1. Bar Chart: Phân Bố Weighted Lift của Top Niche Rules
-- **Mô tả**: Biểu đồ cột cho top 10 luật niche theo weighted lift.
-- **Hành vi mua sắm**: Thể hiện luật nào mạnh nhất trong phân khúc cao cấp – khách VIP ưu tiên combos premium.
-- **Điểm khác biệt Apriori/FP-Growth**: Không khác biệt, vì kết quả giống; FP-Growth chỉ nhanh hơn.
-- **Hình ảnh**:
-  ![Bar Chart Weighted Lift](images/bar_chart_weighted_lift.png)
-  *(Export từ notebook: fig2.show() → Save as PNG)*
-
-### 2. Scatter Plot: Support vs Weighted Support
-- **Mô tả**: Điểm phân tán cho tất cả niche rules (X: support, Y: weighted support, size: weighted lift).
-- **Hành vi mua sắm**: Luật ở góc trên-trái là "niche gems" – ít phổ biến nhưng giá trị kinh doanh cao, phản ánh mua sắm tinh tế của khách hàng giàu có.
-- **Điểm khác biệt Apriori/FP-Growth**: Không có, vì thuật toán sinh rules giống nhau.
-- **Hình ảnh**:
-  ![Scatter Plot Support Weighted](images/scatter_support_weighted.png)
-  *(Export từ notebook: fig.show() → Save as PNG)*
-
-### 3. Network Graph: Quan Hệ Sản Phẩm trong Luật Niche
-- **Mô tả**: Đồ thị mạng với nodes là sản phẩm, edges là luật (weight = weighted lift).
-- **Hành vi mua sắm**: Hiển thị clusters sản phẩm liên quan (e.g., tea sets, stationery), cho thấy hành vi mua combo trong phân khúc niche.
-- **Điểm khác biệt Apriori/FP-Growth**: Không khác, nhưng FP-Growth hiệu quả hơn cho visualization trên dữ liệu lớn.
-- **Hình ảnh**:
-  ![Network Graph Niche](images/network_graph_niche.png)
-  *(Export từ notebook: fig.show() → Save as PNG)*
-
-*(Hướng dẫn export: Trong notebook `weighted_association_rules.ipynb`, chạy cell visualization. Trên chart Plotly, click nút "Download plot as a png" (icon camera) → Lưu vào `images/`. Đổi tên file thành `bar_chart_weighted_lift.png`, `scatter_support_weighted.png`, `network_graph_niche.png`. Nếu không thấy nút, dùng `fig.write_image("images/filename.png")` trong code.)*
 
 ## Insights Kinh Doanh
 
@@ -212,15 +185,26 @@ Trong lĩnh vực bán lẻ, việc hiểu mối quan hệ giữa các sản ph�
 
 ## Visualization và Insights Chi Tiết
 
-### Scatter Plot: Niche Rules - Support vs Weighted Support
-![Scatter Plot: Niche Rules Support vs Weighted Support](images/scatter_support_weighted.png)
+## Trực Quan Hóa Kết Quả
 
+### 1. Bar Chart: Phân Bố Weighted Lift của Top Niche Rules
+- **Mô tả**: Biểu đồ cột cho top 10 luật niche theo weighted lift.
+- **Hành vi mua sắm**: Thể hiện luật nào mạnh nhất trong phân khúc cao cấp – khách VIP ưu tiên combos premium.
+- **Điểm khác biệt Apriori/FP-Growth**: Không khác biệt, vì kết quả giống; FP-Growth chỉ nhanh hơn.
+- **Hình ảnh**:
+ <img width="748" height="543" alt="image" src="https://github.com/user-attachments/assets/e69fae49-a477-4ef2-8dd9-de304da18384" />
+*Biểu đồ bar top 10 luật niche theo weighted lift. Insights: Luật như "WOODEN FRAME ANTIQUE WHITE → WOODEN PICTURE FRAME GREY" có lift >15, cho thấy sức mạnh gợi ý sản phẩm đắt tiền dù ít phổ biến.*
+
+
+### 2. Scatter Plot: Support vs Weighted Support
+- **Mô tả**: Điểm phân tán cho tất cả niche rules (X: support, Y: weighted support, size: weighted lift).
+- **Hành vi mua sắm**: Luật ở góc trên-trái là "niche gems" – ít phổ biến nhưng giá trị kinh doanh cao, phản ánh mua sắm tinh tế của khách hàng giàu có.
+- **Điểm khác biệt Apriori/FP-Growth**: Không có, vì thuật toán sinh rules giống nhau.
+- **Hình ảnh**:
+- 
+<img width="741" height="560" alt="image" src="https://github.com/user-attachments/assets/84e239bd-3ae3-49b2-ad82-d48ff9ead0b3" />
 *Biểu đồ scatter thể hiện mối quan hệ giữa support truyền thống và weighted support của các luật niche. Các điểm lớn hơn cho thấy weighted lift cao, màu sắc theo confidence. Insights: Luật với support <0.01 nhưng weighted support >0.05 thường là combos VIP, như "CHARLOTTE BAG → PICNIC BAG" trong hóa đơn £500+.*
 
-### Bar Chart: Top 10 Niche Rules by Weighted Lift
-![Bar Chart: Top 10 Niche Rules by Weighted Lift](images/bar_chart_weighted_lift.png)
-
-*Biểu đồ bar top 10 luật niche theo weighted lift. Insights: Luật như "WOODEN FRAME ANTIQUE WHITE → WOODEN PICTURE FRAME GREY" có lift >15, cho thấy sức mạnh gợi ý sản phẩm đắt tiền dù ít phổ biến.*
 
 ### Kết Luận và Khuyến Nghị
 Dự án thành công mở rộng association rules với trọng số, khám phá 1.326 luật niche và HUIM demo, cung cấp insights quý cho bán lẻ UK. **FP-Growth** là thuật toán hiệu quả nhất (nhanh, scalable). **Weighted rules** phù hợp niche marketing VIP, **HUIM** cho tối ưu lợi nhuận. Áp dụng thực tế: Tăng doanh thu 30% qua combos VIP và recommendations. Tương lai: Tích hợp real-time (Spark), high-utility algorithms (SPMF library), A/B test insights.
