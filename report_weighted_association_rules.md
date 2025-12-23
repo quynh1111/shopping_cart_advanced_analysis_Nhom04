@@ -219,3 +219,4 @@ Dự án thành công mở rộng association rules với trọng số, khám ph
 
 *Báo cáo chi tiết này dựa trên notebook `weighted_association_rules.ipynb` và data processed. Hình ảnh biểu đồ được export từ Plotly và chèn vào. 
 Liên hệ:[ dinhtrongquynh240@gmail.com ]
+slide: https://docs.google.com/presentation/d/1Eg_K2MkXCwpvWxi0YkpYtEiDh-Isn2mh/edit?usp=sharing&ouid=102698148186797036629&rtpof=true&sd=true
